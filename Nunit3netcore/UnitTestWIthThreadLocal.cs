@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
@@ -6,28 +6,28 @@ using NUnit.Framework;
 namespace Nunit3netcore
 {
     [Parallelizable(ParallelScope.Children)]
-    public class Tests
+    public class UnitTestWIthThreadLocal
     {
-        public ILogger Logger { get; set; }
+        public ThreadLocal<ILogger> Logger;
 
         [SetUp]
         public void Setup()
         {
-            Logger = NUnitLogger.GetLogger();
+            Logger = new ThreadLocal<ILogger>(() => NUnitLogger.GetLogger());
         }
 
         [Test]
         public void Test1()
         {
             Thread.Sleep(3000);
-            Logger.LogInformation($"{TestContext.CurrentContext.Test.Name}");
+            Logger.Value.LogInformation($"{TestContext.CurrentContext.Test.Name}");
         }
 
         [Test]
         public void Test2()
         {
             Thread.Sleep(3000);
-            Logger.LogInformation($"{TestContext.CurrentContext.Test.Name}");
+            Logger.Value.LogInformation($"{TestContext.CurrentContext.Test.Name}");
 
         }
 
@@ -36,10 +36,10 @@ namespace Nunit3netcore
         {
 
             Thread.Sleep(3000);
-            Logger.LogInformation($"{TestContext.CurrentContext.Test.Name}");
+            Logger.Value.LogInformation($"{TestContext.CurrentContext.Test.Name}");
         }
 
-        
+
         [TearDown]
         public void TearDown()
         {
